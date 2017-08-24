@@ -1,5 +1,8 @@
 <?php
 
+/** APP */
+const DEV_MODE = true;
+
 /** REDIS */
 const REDIS_SERVER = '127.0.0.1';
 const REDIS_PORT = '6379';

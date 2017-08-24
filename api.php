@@ -1,11 +1,18 @@
 <?php
-
 session_start();
 const MAIN_PATH = __DIR__;
 include_once (MAIN_PATH . '/bootstrap/bootstrap.php');
 
-lock_resource('xxx');
-echo date('H:i:s') . "\n";
-sleep(3);
-echo date('H:i:s') . "\n";
-release_resource('xxx');
+$route = router();
+
+header('Content-Type: application/json');
+
+if (!$route) {
+    header("HTTP/1.0 404 Not Found");
+    die;
+}
+if($route['access_without_auth'] === false) {
+    //TODO: Check auth
+}
+
+echo json_encode(call_user_func($route['function']));
