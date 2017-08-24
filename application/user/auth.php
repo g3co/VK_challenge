@@ -6,6 +6,6 @@
  * Time: 20:03
  */
 
-function action_get_main() {
-    return array('name' => __FILE__);
+function user_auth_get_action() {
+    return ['name' => __FILE__];
 }
