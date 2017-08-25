@@ -6,6 +6,6 @@
  * Time: 20:03
  */
 
-function user_auth_get_action() {
+function user_auth_get_action($app) {
     return ['name' => __FILE__];
 }

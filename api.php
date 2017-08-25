@@ -1,10 +1,13 @@
 <?php
+/**
+ * @var array $app
+ */
 session_start();
 const MAIN_PATH = __DIR__;
 include_once (MAIN_PATH . '/definitions.php');
 include_once (MAIN_PATH . '/core/bootstrap.php');
 
-$route = router();
+$route = app_router();
 
 if (!$route) {
     error_code(404);
@@ -16,16 +19,6 @@ if($route['access_without_auth'] === false) {
 
 header('Content-Type: application/json');
 
-$application_file = MAIN_PATH . '/application/' . $route['file'];
+app_file_load($route['file']);
 
-if (!file_exists($application_file)) {
-    error_code(403);
-}
-
-include_once($application_file);
-
-if (!function_exists($route['function'])) {
-    error_code(403);
-}
-
-echo json_encode(call_user_func($route['function']));
+echo json_encode(app_call_func($route['function'], $app));

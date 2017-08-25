@@ -9,10 +9,11 @@
 /**
  * @return array|bool
  */
-function router()
+function app_router()
 {
     $routes = [
-        'user/auth' => ['user_auth', 'GET|POST', true],
+        'user/auth' => ['user_auth', 'POST', true],
+        'user/user' => ['user_user', 'GET|POST', true],
     ];
 
     $allowed_request_methods = [
@@ -28,7 +29,7 @@ function router()
             if(stripos($routes[$_GET['method']][1], $_SERVER['REQUEST_METHOD']) !== false) {
                 return [
                     'function' => $routes[$_GET['method']][0] . '_' . $allowed_request_methods[$_SERVER['REQUEST_METHOD']] . '_action',
-                    'file' => str_replace('_', '/', $routes[$_GET['method']][0]) . '.php',
+                    'file' => $routes[$_GET['method']][0],
                     'access_without_auth' => $routes[$_GET['method']][2]
                 ];
             }
