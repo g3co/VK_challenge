@@ -77,7 +77,9 @@ function app_call_func($func_name, $data = [])
 function check_request_data(array $data)
 {
     foreach($data as $data_item){
-        if(empty($_REQUEST[$data_item])) return false;
+        if(!isset($_REQUEST[$data_item])) {
+            return false;
+        }
     }
 
     return true;

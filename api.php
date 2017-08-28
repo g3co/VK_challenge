@@ -3,6 +3,7 @@
  * @var array $app
  */
 session_start();
+unset($_SESSION);
 const MAIN_PATH = __DIR__;
 include_once (MAIN_PATH . '/definitions.php');
 include_once (MAIN_PATH . '/core/bootstrap.php');
@@ -21,4 +22,4 @@ header('Content-Type: application/json');
 
 app_file_load($route['file']);
 
-echo json_encode(app_call_func($route['function'], $app));
+echo json_encode(app_call_func($route['function']));
