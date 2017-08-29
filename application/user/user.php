@@ -25,15 +25,21 @@ function create_user_user_action()
         return ['error'=> true, 'message' => 'Incomplete user data'];
     }
 
-    if (model_call('create', 'user', [
+    $request_type = (int)$_REQUEST['type'];
+    if ($request_type !== USER_TYPE_CUSTOMER && $request_type !== USER_TYPE_DEVELOPER) {
+        return ['error'=> true, 'message' => 'Incorrect user type'];
+    }
+
+    // TODO: validate email, pass and nick
+
+    if (($result = model_call('create', 'user', [
         'nick_name' => $_REQUEST['nick_name'],
         'email' => $_REQUEST['email'],
         'password' => $_REQUEST['password'],
         'type' => $_REQUEST['type'],
-        'salt' => uniqid(mt_rand(), true),
-    ])) {
+    ])) === true) {
         return true;
     } else {
-        return ['error'=> true, 'message' => 'User had not been created'];
+        return ['error'=> true, 'message' => $result[2]];
     }
 }

@@ -17,3 +17,7 @@ const DB_USER_TASKS = 'root';
 const DB_PASS_TASKS = 'X21N795M6brEZAlp';
 const DB_PORT_TASKS = '3306';
 const DB_NAME_TASKS = 'vk_challenge';
+
+/** USER ENTITY */
+const USER_TYPE_CUSTOMER = 1;
+const USER_TYPE_DEVELOPER = 2;

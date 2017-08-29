@@ -12,7 +12,8 @@
 function app_router()
 {
     $routes = [
-        'POST@user/auth' => ['user_auth', 'authorize', true],
+        'POST@user/login' => ['user_auth', 'login', true],
+        'POST@user/logout' => ['user_auth', 'logout', true],
         'POST@user/user' => ['user_user', 'create', true],
         'GET@user/user' => ['user_user', 'get', true],
     ];

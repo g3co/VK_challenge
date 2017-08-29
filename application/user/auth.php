@@ -1,6 +1,6 @@
 <?php
 
-function authorize_user_auth_action()
+function login_user_auth_action()
 {
     if (!check_request_data(['email', 'password'])) {
         return ['error' => true, 'message' => 'Email or password had not been sent'];
@@ -24,4 +24,13 @@ function authorize_user_auth_action()
     setcookie('user_id', $user['id']);
 
     return ['user_id' => (int)$user['id']];
+}
+
+function logout_user_auth_action()
+{
+    unset($_SESSION['user']);
+
+    setcookie('user_id', '', time() - 100);
+
+    return true;
 }
