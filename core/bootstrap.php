@@ -13,6 +13,9 @@ function error_code($code = null)
         print_r(debug_backtrace());
     } else {
         switch ($code) {
+            case 401:
+                header("HTTP/1.0 401 Unauthorized");
+                break;
             case 403:
                 header("HTTP/1.0 403 Forbidden");
                 break;
@@ -80,7 +83,10 @@ function check_request_data(array $data)
         if(!isset($_REQUEST[$data_item])) {
             return false;
         }
+
+        $_REQUEST[$data_item] = htmlspecialchars(strip_tags($_REQUEST[$data_item]));
     }
 
     return true;
 }
+

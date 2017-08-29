@@ -10,7 +10,7 @@
  * @param array $app
  * @return bool
  */
-function get_user_user_action()
+function get_users_user_action()
 {
     if (!check_request_data(['user_id'])) {
         return ['error'=> true, 'message' => 'user_id is not defined'];
@@ -19,7 +19,7 @@ function get_user_user_action()
     return model_call('get_user', 'user', ['id' => $_REQUEST['user_id']]);
 }
 
-function create_user_user_action()
+function create_users_user_action()
 {
     if (!check_request_data(['nick_name', 'email', 'password', 'type'])) {
         return ['error'=> true, 'message' => 'Incomplete user data'];

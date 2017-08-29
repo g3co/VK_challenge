@@ -12,10 +12,11 @@
 function app_router()
 {
     $routes = [
-        'POST@user/login' => ['user_auth', 'login', true],
-        'POST@user/logout' => ['user_auth', 'logout', true],
-        'POST@user/user' => ['user_user', 'create', true],
-        'GET@user/user' => ['user_user', 'get', true],
+        'POST@users/login' => ['login', 'users_auth', true],
+        'POST@users/logout' => ['logout', 'users_auth', false],
+        'POST@users/user' => ['create', 'users_user', true],
+        'GET@users/user' => ['get', 'users_user', false],
+        'POST@tasks/task' => ['create', 'tasks_task', false],
     ];
 
     $allowed_request_methods = [
@@ -30,8 +31,8 @@ function app_router()
         if (isset($allowed_request_methods[$_SERVER['REQUEST_METHOD']]) && isset($routes[$_SERVER['REQUEST_METHOD'] . '@' . $_GET['method']])) {
             $route = $routes[$_SERVER['REQUEST_METHOD'] . '@' . $_GET['method']];
             return [
-                'function' => $route[1] . '_' . $route[0] . '_action',
-                'file' => $route[0],
+                'function' => $route[0] . '_' . $route[1] . '_action',
+                'file' => $route[1],
                 'access_without_auth' => $route[2]
             ];
         }

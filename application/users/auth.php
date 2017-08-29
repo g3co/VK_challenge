@@ -1,6 +1,6 @@
 <?php
 
-function login_user_auth_action()
+function login_users_auth_action()
 {
     if (!check_request_data(['email', 'password'])) {
         return ['error' => true, 'message' => 'Email or password had not been sent'];
@@ -19,6 +19,7 @@ function login_user_auth_action()
         }
 
         $_SESSION['user'] = $user;
+        session_write_close();
     }
 
     setcookie('user_id', $user['id']);
@@ -26,9 +27,10 @@ function login_user_auth_action()
     return ['user_id' => (int)$user['id']];
 }
 
-function logout_user_auth_action()
+function logout_users_auth_action()
 {
     unset($_SESSION['user']);
+    session_write_close();
 
     setcookie('user_id', '', time() - 100);
 
