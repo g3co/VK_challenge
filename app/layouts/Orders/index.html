@@ -1,5 +1,13 @@
 <div>
-    Orders
-    {{ content }}
-    <slot></slot>
+    <slot>
+        <h1>Orders</h1>
+        <ul>
+            <OrderItem
+                    v-for="task in tasks"
+                    :key="task.id"
+            >
+                <RouterLink :href="'/task/'+ task.id">{{ task.task_descr }}</RouterLink>
+            </OrderItem>
+        </ul>
+    </slot>
 </div>

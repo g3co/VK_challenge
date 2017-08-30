@@ -1,11 +1,9 @@
-'use strict';
-
 define([
     'vue'
 ], function(Vue) {
+    'use strict';
 
-    var vm = new Vue(),
-        router = {
+    var router = {
 
             mode: !!window.history ? 'history' : 'anchor',
 
@@ -19,8 +17,25 @@ define([
             _after: function() {},
 
             start: function() {
-                var mode = this.mode;
+                var mode = this.mode,
+                    check = this.check.bind(this);
+
                 this.check(mode == 'history' ? window.location.pathname : window.location.href.slice(1))
+
+                window.addEventListener('popstate', function() {
+                    var _path = window.location.pathname;
+
+                    check(_path)
+                });
+
+                window.addEventListener('hascnage', function() {
+                    var _path = window.location.href || '/';
+                    _path = _path.slice(1);
+
+                    check(_path)
+                });
+
+                return this
             },
 
             go: function(path) {
@@ -33,7 +48,9 @@ define([
 
                 path = this.filter(path);
 
-                this._before(path);
+                if(this._before(path) === false) {
+                    return false
+                }
 
                 if(this.mode == 'history') {
                     var url = this.base.concat(path);
@@ -127,9 +144,11 @@ define([
         methods: {
             traceRoute: function(event) {
 
+                var $root = this.$root;
+
                 router.go(this.linkTo);
 
-                vm.$emit('routeReload', this.linkTo);
+                $root.$emit('routeReload', this.linkTo);
 
                 event.preventDefault();
                 return false
@@ -150,9 +169,10 @@ define([
 
         created: function() {
 
-            var $this = this;
+            var $this = this,
+                $root = this.$root;
 
-            vm.$on('routeReload', function (path) {
+            $root.$on('routeReload', function (path) {
 
                 var component = router.matched;
 

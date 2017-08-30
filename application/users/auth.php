@@ -23,8 +23,12 @@ function login_users_auth_action()
     }
 
     setcookie('user_id', $user['id']);
+    setcookie('user_type', $user['type']);
 
-    return ['user_id' => (int)$user['id']];
+    return [
+        'user_id' => (int)$user['id'],
+        'user_type' => (int)$user['type']
+    ];
 }
 
 function logout_users_auth_action()

@@ -1,5 +1,8 @@
 <div>
-    <RouterLink href="/auth">Login</RouterLink>
-    <RouterLink href="/orders/asd">Orders</RouterLink>
+
+    <RouterLink href="/orders">Orders</RouterLink>
+    <RouterLink v-if="user_id && user_type" href="/logout">Log out</RouterLink>
+    <RouterLink v-else href="/auth">Log in</RouterLink>
+
     <RouterView></RouterView>
 </div>
