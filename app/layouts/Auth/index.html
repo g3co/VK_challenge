@@ -1,4 +1,23 @@
 <div>
-    Authorization
-    <slot></slot>
+    <slot>
+        <h1>Authorization</h1>
+        <form>
+            <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    v-model="userEmail"
+            />
+            <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    v-model="userPassword"
+            />
+            <button
+                type="submit"
+                @click="userAuth"
+            >Login</button>
+        </form>
+    </slot>
 </div>

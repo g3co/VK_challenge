@@ -1,7 +1,8 @@
 define([
     'vue',
-    'text!./index.html'
-], function(Vue, template) {
+    'text!./index.html',
+    'helpers/getCookie'
+], function(Vue, template, getCookie) {
 
     'use strict';
 
@@ -9,9 +10,19 @@ define([
         return new Vue({
 
             el: '#root',
-
+            
             data: {
-                message: 'my message here'
+                user_id: getCookie('user_id'),
+                user_type: getCookie('user_type')
+            },
+
+            created: function() {
+                this.$on('notification', function(data) {
+                    alert([
+                        data.type,
+                        data.text
+                    ].join(': '))
+                });
             },
 
             template: template

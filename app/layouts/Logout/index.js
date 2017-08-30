@@ -1,35 +1,22 @@
 define([
     'vue',
-    'text!./index.html',
     'app/api'
-], function(Vue, template, api) {
+], function(Vue, api) {
     'use strict';
 
-    var vm = new Vue(),
-        AuthLayout = {
+    var LogoutLayout = {
 
         created: function() {
-
-        },
-
-        data: function() {
-            return {
-                userEmail: this.userEmail,
-                userPassword: this.userPassword
-            }
+            this.logOut()
         },
 
         methods: {
-            userAuth: function(event) {
+            logOut: function(event) {
 
                 var $this = this,
-                    $root = $this.$root,
-                    data = {
-                    email: this.userEmail,
-                    password: this.userPassword
-                };
+                    $root = $this.$root;
 
-                api('users/login', data)
+                api('users/logout')
                     .then(function (res) {
 
                         if(!!res == false) {
@@ -62,11 +49,11 @@ define([
             }
         },
 
-        template: template
+        template: ''
 
     };
 
-    Vue.component('AuthLayout', AuthLayout);
+    Vue.component('LogoutLayout', LogoutLayout);
 
-    return AuthLayout
+    return LogoutLayout
 });
