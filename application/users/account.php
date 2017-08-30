@@ -6,6 +6,7 @@
  * Time: 19:20
  */
 
-function pay_users_account_action() {
+function pay_users_account_action()
+{
 
 }
