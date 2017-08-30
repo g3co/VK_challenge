@@ -17,6 +17,7 @@ function app_router()
         'POST@users/user' => ['create', 'users_user', true],
         'GET@users/user' => ['get', 'users_user', false],
         'POST@tasks/task' => ['create', 'tasks_task', false],
+        'GET@tasks/tasks' => ['get_list', 'tasks_task', false],
         'GET@tasks/task' => ['get', 'tasks_task', false],
         'POST@tasks/task/hold' => ['hold', 'tasks_task', false],
     ];

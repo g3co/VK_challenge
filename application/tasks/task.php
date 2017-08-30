@@ -29,7 +29,7 @@ function create_tasks_task_action()
     }
 }
 
-function get_tasks_task_action()
+function get_list_tasks_task_action()
 {
     if (!check_request_data(['last_task', 'first_task'])) {
         return ['error' => true, 'message' => 'Incomplete data'];
@@ -43,6 +43,24 @@ function get_tasks_task_action()
         'last_task' => $_REQUEST['last_task'],
         'first_task' => $_REQUEST['first_task'],
         'quantity' => $_REQUEST['quantity'],
+    ]);
+
+    if ($result !== false) {
+        return $result;
+    } else {
+        return ['error' => true, 'message' => 'Error DB query'];
+    }
+}
+
+function get_tasks_task_action()
+{
+    if (!check_request_data(['task_id'])) {
+        return ['error' => true, 'message' => 'Incomplete data'];
+    }
+
+
+    $result = model_call('get', 'task', [
+        'task_id' => $_REQUEST['task_id'],
     ]);
 
     if ($result !== false) {
