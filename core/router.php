@@ -20,6 +20,7 @@ function app_router()
         'GET@tasks/tasks' => ['get_list', 'tasks_task', false],
         'GET@tasks/task' => ['get', 'tasks_task', false],
         'POST@tasks/task/hold' => ['hold', 'tasks_task', false],
+        'POST@tasks/task/close' => ['close', 'tasks_task', false],
     ];
 
     $allowed_request_methods = [

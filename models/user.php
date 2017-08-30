@@ -51,7 +51,7 @@ function create_user_model($app, $data)
     $stmt->bindParam(':type', $data['type'], PDO::PARAM_INT);
 
     if ($stmt->execute()) {
-        return true;
+        return $user_db->lastInsertId();
     } else {
         return false;
     }

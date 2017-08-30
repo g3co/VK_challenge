@@ -45,6 +45,24 @@ function get_list_task_model($app, $data)
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function get_first_list_task_model($app, $data)
+{
+    /** @var PDO $task_db */
+    $task_db = $app['db'](DB_INSTANCE_TASK);
+
+    $stmt = $task_db->prepare(
+        'SELECT * FROM `tasks` WHERE state = ' . TASK_STATE_NEW . ' ORDER BY id DESC LIMIT :quantity'
+    );
+
+    $stmt->bindParam(':quantity', $data['quantity'], PDO::PARAM_INT);
+
+    if (!$stmt->execute()) {
+        return false;
+    }
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 function get_task_model($app, $data)
 {
     /** @var PDO $task_db */
@@ -80,3 +98,37 @@ function hold_task_model($app, $data)
     return $stmt->rowCount();
 }
 
+function release_task_model($app, $data)
+{
+    /** @var PDO $task_db */
+    $task_db = $app['db'](DB_INSTANCE_TASK);
+
+    $stmt = $task_db->prepare(
+        'UPDATE `tasks` SET `dev_id` = NULL, `state` = ' . TASK_STATE_NEW . ' WHERE `id` = :task_id'
+    );
+    $stmt->bindParam(':task_id', $data['task_id'], PDO::PARAM_INT);
+
+    if (!$stmt->execute()) {
+        return false;
+    }
+
+    return $stmt->rowCount();
+}
+
+function close_task_model($app, $data)
+{
+    /** @var PDO $task_db */
+    $task_db = $app['db'](DB_INSTANCE_TASK);
+
+    $stmt = $task_db->prepare(
+        'UPDATE `tasks` SET `state` = ' . TASK_STATE_CLOSED . ' WHERE `id` = :task_id AND `author_id` = :author_id AND `state` = ' . TASK_STATE_HOLD
+    );
+    $stmt->bindParam(':task_id', $data['task_id'], PDO::PARAM_INT);
+    $stmt->bindParam(':author_id', $data['author_id'], PDO::PARAM_INT);
+
+    if (!$stmt->execute()) {
+        return false;
+    }
+
+    return $stmt->rowCount();
+}

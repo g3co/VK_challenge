@@ -32,15 +32,18 @@ function create_users_user_action()
 
     // TODO: validate email, pass and nick
 
-    if (($result = model_call('create', 'user', [
-            'nick_name' => $_REQUEST['nick_name'],
-            'email' => $_REQUEST['email'],
-            'password' => $_REQUEST['password'],
-            'type' => $_REQUEST['type'],
-        ])) === true
-    ) {
+    if ($user_id = model_call('create', 'user', ['nick_name' => $_REQUEST['nick_name'],'email' => $_REQUEST['email'],
+            'password' => $_REQUEST['password'],'type' => $_REQUEST['type']])) {
+
+        $account = 0;
+        // Demo wallet for customers user
+        if ($_REQUEST['type'] == USER_TYPE_CUSTOMER) {
+            $account = 10000;
+        }
+
+        model_call('initial', 'accounts', ['user_id' => $user_id,'account' => $account]);
         return true;
     } else {
-        return ['error' => true, 'message' => $result[2]];
+        return ['error' => true, 'message' => 'Duplicated user data'];
     }
 }

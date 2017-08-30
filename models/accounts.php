@@ -27,3 +27,18 @@ function pay_accounts_model($app, $data)
 
     return $stmt->execute();
 }
+
+function initial_accounts_model($app, $data)
+{
+    /** @var PDO $account_db */
+    $account_db = $app['db'](DB_INSTANCE_ACCOUNTS);
+
+    $stmt = $account_db->prepare(
+        'INSERT INTO `accounts` (`user_id`, `current_account`) VALUES (:user_id, :account)'
+    );
+    $stmt->bindParam(':user_id', $data['user_id'], PDO::PARAM_INT);
+    $stmt->bindParam(':account', $data['account']);
+
+    return $stmt->execute();
+}
+
