@@ -1,7 +1,7 @@
 <?php
 
 /** APP */
-const DEV_MODE = true;
+const DEV_MODE = false;
 
 /** REDIS */
 const REDIS_SERVER = '127.0.0.1';
@@ -15,8 +15,8 @@ const REDIS_CACHE_ITEM_TTL = 300;
 
 /** DATABASE - tasks*/
 const DB_HOST_TASKS = 'localhost';
-const DB_USER_TASKS = 'root';
-const DB_PASS_TASKS = 'X21N795M6brEZAlp';
+const DB_USER_TASKS = 'vk_challenge';
+const DB_PASS_TASKS = 'vk_challenge';
 const DB_PORT_TASKS = '3306';
 const DB_NAME_TASKS = 'vk_challenge';
 
@@ -29,7 +29,7 @@ const USER_TYPE_CUSTOMER = 1;
 const USER_TYPE_DEVELOPER = 2;
 
 /** TASK ENTITY */
-const TASK_MAX_QUANTITY_FOR_LOAD = 15;
+const TASK_MAX_QUANTITY_FOR_LOAD = 10;
 const TASK_MAX_QUANTITY_FOR_NEWS = 150;
 
 const TASK_STATE_NEW = 0;
