@@ -15,7 +15,7 @@ function get_users_user_action()
     $account = model_call('user', 'accounts', ['user_id' => $_SESSION['user']['id']]);
     $user_data['nick_name'] = $_SESSION['user']['nick_name'];
     $user_data['email'] = $_SESSION['user']['email'];
-    $user_data['type'] = ($_SESSION['user']['type'] == USER_TYPE_CUSTOMER) ? 'Заказчик' : 'Исполнитель';
+    $user_data['type'] = ($_SESSION['user']['type'] == USER_TYPE_CUSTOMER) ? 'Customer' : 'Developer';
     if ($account) {
         $user_data['balance'] =  $account[0]['current_account'];
         $user_data['account'] =  $account;
