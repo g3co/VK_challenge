@@ -1,4 +1,4 @@
-e<?php
+<?php
 
 function login_users_auth_action()
 {
