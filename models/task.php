@@ -35,7 +35,7 @@ function get_list_task_model($app, $data)
     /** @var Redis $redis */
     $redis= $app['redis']();
 
-    $redis_cache_key = REDIS_CACHE_PREFIX_TASKS . $data['first_task'] . ':' . $data['last_task'] . ':' . $data['quantity'];
+    $redis_cache_key = REDIS_CACHE_PREFIX_TASKS . 'paging:' . $data['last_task'] . ':' . $data['quantity'];
 
     if ($cache = $redis->get($redis_cache_key)) {
         return unserialize($cache);
@@ -45,11 +45,39 @@ function get_list_task_model($app, $data)
     $task_db = $app['db'](DB_INSTANCE_TASK);
 
     $stmt = $task_db->prepare(
-        '(SELECT * FROM `tasks` WHERE state = ' . TASK_STATE_NEW . ' AND id > :first_task ORDER BY id DESC) UNION
-         (SELECT * FROM `tasks` WHERE state = ' . TASK_STATE_NEW . ' AND id < :last_task ORDER BY id DESC LIMIT :quantity)'
+        'SELECT * FROM `tasks` WHERE state != ' . TASK_STATE_CLOSED . ' AND id < :last_task ORDER BY id DESC LIMIT :quantity'
     );
 
     $stmt->bindParam(':last_task', $data['last_task'], PDO::PARAM_INT);
+    $stmt->bindParam(':quantity', $data['quantity'], PDO::PARAM_INT);
+
+    if (!$stmt->execute()) {
+        return false;
+    }
+
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $redis->set($redis_cache_key, serialize($result), REDIS_CACHE_TTL);
+    return $result;
+}
+
+function get_new_list_task_model($app, $data)
+{
+    /** @var Redis $redis */
+    $redis= $app['redis']();
+
+    $redis_cache_key = REDIS_CACHE_PREFIX_TASKS . 'new:' . $data['first_task'] . ':' . $data['quantity'];
+
+    if ($cache = $redis->get($redis_cache_key)) {
+        return unserialize($cache);
+    }
+
+    /** @var PDO $task_db */
+    $task_db = $app['db'](DB_INSTANCE_TASK);
+
+    $stmt = $task_db->prepare(
+        'SELECT * FROM `tasks` WHERE state != ' . TASK_STATE_CLOSED . ' AND id > :first_task ORDER BY id DESC LIMIT :quantity'
+    );
+
     $stmt->bindParam(':first_task', $data['first_task'], PDO::PARAM_INT);
     $stmt->bindParam(':quantity', $data['quantity'], PDO::PARAM_INT);
 
@@ -76,7 +104,7 @@ function get_first_list_task_model($app, $data)
     $task_db = $app['db'](DB_INSTANCE_TASK);
 
     $stmt = $task_db->prepare(
-        'SELECT * FROM `tasks` WHERE state = ' . TASK_STATE_NEW . ' ORDER BY id DESC LIMIT :quantity'
+        'SELECT * FROM `tasks` WHERE state != ' . TASK_STATE_CLOSED . ' ORDER BY id DESC LIMIT :quantity'
     );
 
     $stmt->bindParam(':quantity', $data['quantity'], PDO::PARAM_INT);
@@ -115,7 +143,7 @@ function get_task_model($app, $data)
     }
 
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    $redis->set($redis_cache_key, serialize($result));
+    $redis->set($redis_cache_key, serialize($result), REDIS_CACHE_ITEM_TTL);
     return $result;
 }
 

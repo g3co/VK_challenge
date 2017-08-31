@@ -6,6 +6,14 @@
  * Time: 19:26
  */
 
+/** Создание задачи
+ * @required_params [
+ *  task_name string имя задачи
+ *  task_descr string описание задачи
+ *  task_price float стоимость
+ * ]
+ * @return array|bool true или массив ошибки
+ */
 function create_tasks_task_action()
 {
     if (!check_request_data(['task_name', 'task_descr', 'price'])) {
@@ -29,24 +37,45 @@ function create_tasks_task_action()
     }
 }
 
+/** Получение списка заказов с пагинацией
+ * @optional_params [
+ *  first_task int доступная задача с максимальным ID
+ *  last_task int доступная задача с минимальным ID
+ *  quantity int количество элементов в выгрузке
+ * ]
+ *
+ * Параметры first_task и last_task взаимоисключающиеся
+ * first_task - это максимальный Id таски полученный в прошлых выборках,
+ * позволяющий подгрузить новые задача с момента последнего запроса
+ *
+ * last_task - это минимальный Id из доступных с прошлых выгрузок,
+ * позволяет догрузить невыгруженные ранее задачи.
+ *
+ * @return mixed результат или массив ошибки
+ */
 function get_list_tasks_task_action()
 {
     if (!isset($_REQUEST['quantity']) || $_REQUEST['quantity'] > TASK_MAX_QUANTITY_FOR_LOAD) {
-        $_REQUEST['quantity'] = TASK_MAX_QUANTITY_FOR_LOAD;
+        $quantity = TASK_MAX_QUANTITY_FOR_LOAD;
+    } else {
+        $quantity = (int)$_REQUEST['quantity'];
     }
 
-    if (!isset($_REQUEST['last_task']) || !isset($_REQUEST['first_task'])) {
-        $result = model_call('get_first_list', 'task', [
-            'quantity' => $_REQUEST['quantity'],
+    if (!empty($_REQUEST['last_task'])) {
+        $result = model_call('get_list', 'task', [
+            'last_task' => (int)$_REQUEST['last_task'],
+            'quantity' => $quantity,
+        ]);
+    } elseif (!empty($_REQUEST['first_task'])) {
+        $result = model_call('get_new_list', 'task', [
+            'quantity' => $quantity,
+            'first_task' => (int)$_REQUEST['first_task'],
         ]);
     } else {
-        $result = model_call('get_list', 'task', [
-            'last_task' => $_REQUEST['last_task'],
-            'first_task' => $_REQUEST['first_task'],
-            'quantity' => $_REQUEST['quantity'],
+        $result = model_call('get_first_list', 'task', [
+            'quantity' => $quantity,
         ]);
     }
-
 
     if ($result !== false) {
         return $result;
@@ -55,6 +84,12 @@ function get_list_tasks_task_action()
     }
 }
 
+/** Позволяет получить информацию по одной конкретной задаче.
+ * @required_params [
+ *  task_id int Id задачи
+ * ]
+ * @return mixed результат или массив ошибки
+ */
 function get_tasks_task_action()
 {
     if (!check_request_data(['task_id'])) {
@@ -63,7 +98,7 @@ function get_tasks_task_action()
 
 
     $result = model_call('get', 'task', [
-        'task_id' => $_REQUEST['task_id'],
+        'task_id' => (int)$_REQUEST['task_id'],
     ]);
 
     if ($result !== false) {
@@ -73,6 +108,13 @@ function get_tasks_task_action()
     }
 }
 
+/** Метод позволяющий 'взять' задачу в исполнение
+ * В этом методе происходит списание/зачисление денег
+ *
+ * Взять можно только задачу со статусом TASK_STATE_NEW
+ *
+ * @return array|bool true или массив ошибки
+ */
 function hold_tasks_task_action()
 {
     if (!check_request_data(['task_id'])) {
@@ -111,6 +153,12 @@ function hold_tasks_task_action()
     return ['error' => true, 'message' => 'Task can\'t be hold'];
 }
 
+/** Закрытие задачи. Закрыть может только создатель задачи. Закрытая задача не отображается в списке задач.
+ *
+ * Взять можно только задачу со статусом TASK_STATE_NEW
+ *
+ * @return array|bool true или массив ошибки
+ */
 function close_tasks_task_action()
 {
     if (!check_request_data(['task_id'])) {

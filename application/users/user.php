@@ -7,18 +7,32 @@
  */
 
 /**
- * @param array $app
- * @return bool
+ * Получение информации о юзере
+ * @return array|mixed
  */
 function get_users_user_action()
 {
-    if (!check_request_data(['user_id'])) {
-        return ['error' => true, 'message' => 'user_id is not defined'];
+    $account = model_call('user', 'accounts', ['user_id' => $_SESSION['user']['id']]);
+    $user_data['nick_name'] = $_SESSION['user']['nick_name'];
+    $user_data['email'] = $_SESSION['user']['email'];
+    $user_data['type'] = ($_SESSION['user']['type'] == USER_TYPE_CUSTOMER) ? 'Заказчик' : 'Исполнитель';
+    if ($account) {
+        $user_data['balance'] =  $account[0]['current_account'];
+        $user_data['account'] =  $account;
     }
 
-    return model_call('get_user', 'user', ['id' => $_REQUEST['user_id']]);
+    return $user_data;
 }
 
+/** Создание нового юзера
+ * @required_params [
+ *  nick_name string Имя пользователя
+ *  email string email
+ *  password string пароль
+ *  type int тип USER_TYPE_CUSTOMER|USER_TYPE_DEVELOPER
+ * ]
+ * @return array|bool
+ */
 function create_users_user_action()
 {
     if (!check_request_data(['nick_name', 'email', 'password', 'type'])) {

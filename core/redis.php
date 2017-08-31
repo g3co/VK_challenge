@@ -12,7 +12,9 @@ $app['redis'] = function () use (&$redis_store) {
     return $redis_store;
 };
 
-
+/** Блокировка ресурса
+ * @param $res string уникальное название ресурса
+ */
 function lock_resource($res) {
     /** @var Redis $redis */
     global $app;
@@ -29,6 +31,9 @@ function lock_resource($res) {
     $redis->expire($res, REDIS_LOCK_TTL);
 }
 
+/** Разблокировка
+ * @param $res string уникальное название ресурса
+ */
 function release_resource($res) {
     /** @var Redis $redis */
     global $app;

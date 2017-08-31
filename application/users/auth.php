@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @return array
+ */
 function login_users_auth_action()
 {
     if (!check_request_data(['email', 'password'])) {
