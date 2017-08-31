@@ -1,7 +1,7 @@
 <div>
     <slot>
         <h1>Orders</h1>
-        <span class="sync" @click="syncLatest">sync latest</span>
+        <span v-if="tasks && tasks.length" class="sync" @click="syncLatest">sync latest</span>
         <ul class="orders">
             <OrderItem
                     v-for="task in tasks"
@@ -11,6 +11,6 @@
                 <p>{{ task.task_descr }}</p>
             </OrderItem>
         </ul>
-        <span class="older" @click="loadOlder">load more</span>
+        <span v-if="tasks && tasks.length" class="older" @click="loadOlder">load more</span>
     </slot>
 </div>
