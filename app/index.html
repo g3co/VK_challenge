@@ -1,8 +1,14 @@
-<div>
+<div class="main-content">
 
-    <RouterLink href="/orders">Orders</RouterLink>
-    <RouterLink v-if="user_id && user_type" href="/logout">Log out</RouterLink>
-    <RouterLink v-else href="/auth">Log in</RouterLink>
+    <header class="header">
+        <RouterLink v-if="authorized" href="/orders">Orders</RouterLink>
+        <RouterLink v-if="user_type == 1 && authorized" href="/task/new">New Task</RouterLink>
+        <RouterLink v-if="authorized" href="/account">Account</RouterLink>
+        <RouterLink v-if="authorized" href="/logout">Log out</RouterLink>
+        <RouterLink v-else href="/auth">Log in</RouterLink>
+    </header>
 
-    <RouterView></RouterView>
+    <main class="content">
+        <RouterView></RouterView>
+    </main>
 </div>

@@ -44,12 +44,12 @@ define([
                         console.error(err)
                     });
 
-                event.preventDefault();
+                !!event && event.preventDefault();
                 return false
             }
         },
 
-        template: ''
+        template: '<div></div>'
 
     };
 

@@ -1,13 +1,16 @@
 <div>
     <slot>
         <h1>Orders</h1>
-        <ul>
+        <span v-if="tasks && tasks.length" class="sync" @click="syncLatest">sync latest</span>
+        <ul class="orders">
             <OrderItem
                     v-for="task in tasks"
                     :key="task.id"
             >
-                <RouterLink :href="'/task/'+ task.id">{{ task.task_descr }}</RouterLink>
+                <RouterLink :href="'/task/'+ task.id">{{ task.task_name }}</RouterLink>
+                <p>{{ task.task_descr }}</p>
             </OrderItem>
         </ul>
+        <span v-if="tasks && tasks.length" class="older" @click="loadOlder">load more</span>
     </slot>
 </div>

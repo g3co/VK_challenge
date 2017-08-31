@@ -16,8 +16,9 @@ requirejs([
     'layouts/Auth/index',
     'layouts/Logout/index',
     'layouts/Orders/index',
+    'layouts/Account/index',
     'layouts/Task/index'
-], function(App, Router, getCookie, AuthLayout, LogoutLayout, OrdersLayout, TaskLayout) {
+], function(App, Router, getCookie, AuthLayout, LogoutLayout, OrdersLayout, AccountLayout, TaskLayout) {
 
     App();
 
@@ -26,6 +27,7 @@ requirejs([
         { path: '/auth', handler: function() {return AuthLayout} },
         { path: '/logout', handler: function() {return LogoutLayout} },
         { path: '/orders', handler: function() {return OrdersLayout} },
+        { path: '/account', handler: function() {return AccountLayout} },
         { path: '/task/:id', handler: TaskLayout }
     ]);
 

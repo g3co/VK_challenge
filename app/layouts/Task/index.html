@@ -1,6 +1,40 @@
-<div>
+<div :class="classNames">
     <slot>
-        <h1>Task</h1>
-        {{ task.task_descr }}
+        <h1>
+            Task
+            <small v-if="task.state == 1">on hold</small>
+            <small v-if="task.state == 2">closed</small>
+        </h1>
+        <section v-if="id !== 0">
+            <button v-if="task.state == 1 && task.author_id == user_id" @click="closeTask">close</button>
+            <button v-if="user_type == 2 && task.state == 0" @click="holdTask">hold</button>
+            <h6>{{ task.task_name }}</h6>
+            <p>
+                {{ task.task_descr }}
+            </p>
+            <div>
+                <span class="date">{{ task.change_date }}</span>
+            </div>
+        </section>
+
+        <!-- Task creation -->
+        <form  v-if="id === 0" class="task-view">
+            <input
+                v-model="task.task_name"
+                type="text"
+                placeholder="Task name"
+                autofocus
+            />
+            <textarea
+                v-model="task.task_descr"
+                placeholder="Task description"
+            ></textarea>
+            <input
+                v-model="task.price"
+                placeholder="00.00"
+                type="number"
+            />
+            <button type="submit" @click="createTask">Create new one</button>
+        </form>
     </slot>
 </div>
