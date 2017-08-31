@@ -9,7 +9,8 @@ var proto = '/',
         'POST@tasks/task',
         'GET@tasks/tasks',
         'GET@tasks/task',
-        'POST@tasks/task/hold'
+        'POST@tasks/task/hold',
+        'POST@tasks/task/close'
     ];
 
 define([
@@ -45,14 +46,16 @@ define([
                             'Content-Type': 'application/x-www-form-urlencoded'
                         }
                     })
-                    .then(filterResponse);
+                    .then(filterResponse)
+                    .catch(errorHandler);
                 break;
             case 'get':
                 return axios.get([
                     getFullPath(method),
                     encodedObject(body)
                 ].join('&'))
-                    .then(filterResponse);
+                    .then(filterResponse)
+                    .catch(errorHandler);
                 break;
             default:break;
         }
@@ -71,6 +74,20 @@ function encodedObject(obj) {
     });
 
     return data.join('&')
+}
+
+function errorHandler(err) {
+    var status = !!err && !!err.response ? err.response.status : 500;
+
+    switch(status) {
+        case 401:
+            window.location.replace('/auth');
+            break;
+        case 500:
+            console.log(err);
+            break;
+        default:break
+    }
 }
 
 function filterResponse(res) {

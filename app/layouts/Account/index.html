@@ -1,0 +1,21 @@
+<div>
+    <slot>
+        <h1>
+            User
+            <small>
+                type: {{ user.type }}
+            </small>
+        </h1>
+        <h6>{{ user.nick_name }}</h6>
+        <span>{{ user.email }}</span>
+        <b>Wallet: {{ user.balance }}</b>
+
+        <ul class="bills">
+            <li v-for="bill in user.account" :key="bill.id">
+                <RouterLink :href="bill.task_id ? '/task/'+ bill.task_id : ''">task {{ bill.task_id }}</RouterLink>
+                <span>(<i>{{ bill.current_account }}</i> / <u :class="{ negative: bill.account_change < 0, positive: bill.account_change > 0 }">{{ bill.account_change }}</u>)</span>
+                <span class="date">{{ bill.date }}</span>
+            </li>
+        </ul>
+    </slot>
+</div>

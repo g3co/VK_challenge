@@ -16,12 +16,22 @@ define([
                 user_type: getCookie('user_type')
             },
 
+            computed: {
+                authorized: function() {
+                    return this.user_id && this.user_type
+                }
+            },
+
             created: function() {
                 this.$on('notification', function(data) {
-                    alert([
-                        data.type,
-                        data.text
-                    ].join(': '))
+                    
+                    if(!!data && !!data.text) {
+                        alert([
+                            data.type,
+                            data.text
+                        ].join(': '))
+                    }
+
                 });
             },
 
