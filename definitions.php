@@ -10,6 +10,7 @@ const REDIS_CONNECTION_TIMEOUT = '3';
 const REDIS_LOCK_WAITING_TIME_US =  '1000';
 const REDIS_RELEASE_LOCK_PROBABILITY =  '10';
 const REDIS_LOCK_TTL = 3;
+const REDIS_CACHE_TTL = 3;
 
 /** DATABASE - tasks*/
 const DB_HOST_TASKS = 'localhost';

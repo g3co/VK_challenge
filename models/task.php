@@ -6,6 +6,9 @@
  * Time: 19:46
  */
 
+const REDIS_CACHE_PREFIX_TASKS = 'cache:tasks:';
+const REDIS_CACHE_PREFIX_TASK = 'cache:task:';
+
 function create_task_model($app, $data)
 {
     /** @var PDO $task_db */
@@ -20,6 +23,7 @@ function create_task_model($app, $data)
     $stmt->bindParam(':price', $data['price'], PDO::PARAM_INT);
 
     if ($stmt->execute()) {
+        clear_tasks_cache($app);
         return true;
     } else {
         return false;
@@ -28,6 +32,15 @@ function create_task_model($app, $data)
 
 function get_list_task_model($app, $data)
 {
+    /** @var Redis $redis */
+    $redis= $app['redis']();
+
+    $redis_cache_key = REDIS_CACHE_PREFIX_TASKS . $data['first_task'] . ':' . $data['last_task'] . ':' . $data['quantity'];
+
+    if ($cache = $redis->get($redis_cache_key)) {
+        return unserialize($cache);
+    }
+
     /** @var PDO $task_db */
     $task_db = $app['db'](DB_INSTANCE_TASK);
 
@@ -35,18 +48,30 @@ function get_list_task_model($app, $data)
         '(SELECT * FROM `tasks` WHERE state = ' . TASK_STATE_NEW . ' AND id > :first_task ORDER BY id DESC) UNION
          (SELECT * FROM `tasks` WHERE state = ' . TASK_STATE_NEW . ' AND id < :last_task ORDER BY id DESC LIMIT :quantity)'
     );
+
     $stmt->bindParam(':last_task', $data['last_task'], PDO::PARAM_INT);
     $stmt->bindParam(':first_task', $data['first_task'], PDO::PARAM_INT);
     $stmt->bindParam(':quantity', $data['quantity'], PDO::PARAM_INT);
+
     if (!$stmt->execute()) {
         return false;
     }
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $redis->set($redis_cache_key, serialize($result), REDIS_CACHE_TTL);
+    return $result;
 }
 
 function get_first_list_task_model($app, $data)
 {
+    /** @var Redis $redis */
+    $redis= $app['redis']();
+
+    $redis_cache_key = REDIS_CACHE_PREFIX_TASKS . 'first:' . $data['quantity'];
+    if ($cache = $redis->get($redis_cache_key)) {
+        return unserialize($cache);
+    }
+
     /** @var PDO $task_db */
     $task_db = $app['db'](DB_INSTANCE_TASK);
 
@@ -60,24 +85,38 @@ function get_first_list_task_model($app, $data)
         return false;
     }
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $redis->set($redis_cache_key, serialize($result));
+    return $result;
 }
 
 function get_task_model($app, $data)
 {
+    /** @var Redis $redis */
+    $redis= $app['redis']();
+
+    $redis_cache_key = REDIS_CACHE_PREFIX_TASK . $data['task_id'];
+
+    if ($cache = $redis->get($redis_cache_key)) {
+        return unserialize($cache);
+    }
+
     /** @var PDO $task_db */
     $task_db = $app['db'](DB_INSTANCE_TASK);
 
     $stmt = $task_db->prepare(
         'SELECT * FROM `tasks` WHERE id = :task_id'
     );
+
     $stmt->bindParam(':task_id', $data['task_id'], PDO::PARAM_INT);
 
     if (!$stmt->execute()) {
         return false;
     }
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $redis->set($redis_cache_key, serialize($result));
+    return $result;
 }
 
 function hold_task_model($app, $data)
@@ -95,6 +134,7 @@ function hold_task_model($app, $data)
         return false;
     }
 
+    clear_cache($app, $data['task_id']);
     return $stmt->rowCount();
 }
 
@@ -111,6 +151,8 @@ function release_task_model($app, $data)
     if (!$stmt->execute()) {
         return false;
     }
+
+    clear_cache($app, $data['task_id']);
 
     return $stmt->rowCount();
 }
@@ -130,5 +172,27 @@ function close_task_model($app, $data)
         return false;
     }
 
+    clear_cache($app, $data['task_id']);
+
     return $stmt->rowCount();
+}
+
+function clear_tasks_cache($app)
+{
+    /** @var Redis $redis */
+    $redis = $app['redis']();
+    $redis->delete($redis->keys(REDIS_CACHE_PREFIX_TASKS . '*'));
+}
+
+function clear_task_cache($app, $task_id)
+{
+    /** @var Redis $redis */
+    $redis = $app['redis']();
+    $redis->delete(REDIS_CACHE_PREFIX_TASK . $task_id);
+}
+
+function clear_cache($app, $task_id)
+{
+    clear_tasks_cache($app);
+    clear_task_cache($app, $task_id);
 }
