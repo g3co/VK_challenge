@@ -169,12 +169,13 @@ a:hover {
 }
 
 .orders a {
+    font-weight: bold;
     color: #0068ab;
     text-decoration: none;
 }
 
 .orders p {
-    font-size: 1rem;
+    font-size: 1.5rem;
     color: #222;
 }
 
@@ -194,4 +195,9 @@ a:hover {
     margin: 10px 0 0;
     font-size: 1rem;
     color: gray;
+}
+
+.price {
+    font-weight: normal;
+    color: #222;
 }

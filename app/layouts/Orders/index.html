@@ -7,7 +7,7 @@
                     v-for="task in tasks"
                     :key="task.id"
             >
-                <RouterLink :href="'/task/'+ task.id">{{ task.task_name }}</RouterLink>
+                <RouterLink :href="'/task/'+ task.id">{{ task.task_name }} <span class="price">(price:{{ task.price }})</span></RouterLink>
                 <p>{{ task.task_descr }}</p>
             </OrderItem>
         </ul>

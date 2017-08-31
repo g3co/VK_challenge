@@ -8,7 +8,7 @@
         <section v-if="id !== 0">
             <button v-if="task.state == 1 && task.author_id == user_id" @click="closeTask">close</button>
             <button v-if="user_type == 2 && task.state == 0" @click="holdTask">hold</button>
-            <h6>{{ task.task_name }}</h6>
+            <h6>{{ task.task_name }} <span class="price">(price:{{ task.price }})</span></h6>
             <p>
                 {{ task.task_descr }}
             </p>
