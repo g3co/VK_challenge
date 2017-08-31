@@ -13,7 +13,7 @@ function app_router()
 {
     $routes = [
         'POST@users/login' => ['login', 'users_auth', true],
-        'POST@users/logout' => ['logout', 'users_auth', false],
+        'POST@users/logout' => ['logout', 'users_auth', true],
         'POST@users/user' => ['create', 'users_user', true],
         'GET@users/user' => ['get', 'users_user', false],
         'GET@users/user/tasks' => ['get_user', 'tasks_task', false],

@@ -17,7 +17,7 @@ $app['db'] = function ($db_name) use (&$db_store) {
         // TODO: chose credentials depends of db name
 
         try {
-            $db_store[$db_name] = new PDO('mysql:host=' . DB_HOST_TASKS . ';dbname=' . DB_NAME_TASKS, DB_USER_TASKS, DB_PASS_TASKS);
+            $db_store[$db_name] = new PDO('mysql:host=' . DB_HOST_TASKS . ';charset=UTF8;dbname=' . DB_NAME_TASKS, DB_USER_TASKS, DB_PASS_TASKS);
         }
         catch( PDOException $Exception ) {
             error_code(500);
