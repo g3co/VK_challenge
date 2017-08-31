@@ -90,6 +90,35 @@ function get_new_list_task_model($app, $data)
     return $result;
 }
 
+function get_by_user_task_model($app, $data)
+{
+    /** @var Redis $redis */
+    $redis= $app['redis']();
+
+    $redis_cache_key = REDIS_CACHE_PREFIX_TASKS . 'user_tasks:' . $_SESSION['user']['id'];
+
+    if ($cache = $redis->get($redis_cache_key)) {
+        return unserialize($cache);
+    }
+
+    /** @var PDO $task_db */
+    $task_db = $app['db'](DB_INSTANCE_TASK);
+
+    $stmt = $task_db->prepare(
+        'SELECT * FROM `tasks` WHERE author_id = :user_id OR dev_id = :user_id ORDER BY id DESC'
+    );
+
+    $stmt->bindParam(':user_id', $data['user_id'], PDO::PARAM_INT);
+
+    if (!$stmt->execute()) {
+        return false;
+    }
+
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $redis->set($redis_cache_key, serialize($result), REDIS_CACHE_TTL);
+    return $result;
+}
+
 function get_first_list_task_model($app, $data)
 {
     /** @var Redis $redis */

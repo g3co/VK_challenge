@@ -68,7 +68,7 @@ function get_list_tasks_task_action()
         ]);
     } elseif (!empty($_REQUEST['first_task'])) {
         $result = model_call('get_new_list', 'task', [
-            'quantity' => $quantity,
+            'quantity' => TASK_MAX_QUANTITY_FOR_NEWS,
             'first_task' => (int)$_REQUEST['first_task'],
         ]);
     } else {
@@ -96,9 +96,33 @@ function get_tasks_task_action()
         return ['error' => true, 'message' => 'Incomplete data'];
     }
 
-
     $result = model_call('get', 'task', [
         'task_id' => (int)$_REQUEST['task_id'],
+    ]);
+
+    if ($result !== false) {
+        $developer = model_call('get_user', 'user', [
+            'id' => $result['dev_id'],
+        ]);
+
+        if ($developer) {
+            $result['developer']['nick_name'] = $developer['nick_name'];
+            $result['developer']['email'] = $developer['email'];
+        }
+
+        return $result;
+    } else {
+        return ['error' => true, 'message' => 'Error DB query'];
+    }
+}
+/** Получение всех тасок юзера
+ *
+ * @return mixed результат или массив ошибки
+ */
+function get_user_tasks_task_action()
+{
+    $result = model_call('get_by_user', 'task', [
+        'user_id' => $_SESSION['user']['id'],
     ]);
 
     if ($result !== false) {

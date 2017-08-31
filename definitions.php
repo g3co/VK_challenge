@@ -30,10 +30,11 @@ const USER_TYPE_DEVELOPER = 2;
 
 /** TASK ENTITY */
 const TASK_MAX_QUANTITY_FOR_LOAD = 15;
+const TASK_MAX_QUANTITY_FOR_NEWS = 150;
 
 const TASK_STATE_NEW = 0;
 const TASK_STATE_HOLD = 1;
 const TASK_STATE_CLOSED = 2;
 
 /** SYSTEM DATA */
-const SYSTEM_FEE = 5;
+const SYSTEM_FEE = 5; //Комиссия системы
